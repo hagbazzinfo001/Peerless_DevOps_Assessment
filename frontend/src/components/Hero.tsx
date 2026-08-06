@@ -42,7 +42,7 @@ type HeroProps = {
   
         <div className="mt-10 border-t border-white/30 pt-6">
           <p className="text-lg">
-            Built by <strong>Agbabiaka Hammed</strong>
+            Built by <strong>Agbabiaka Hammed Owolabi</strong>
           </p>
   
           <p className="text-sm text-blue-200">
