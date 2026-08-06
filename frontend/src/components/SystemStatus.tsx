@@ -18,17 +18,26 @@ export default function SystemStatus() {
 
         <StatusCard
           title="Environment"
-          value={version.environment}
+          value={health.environment}
         />
 
         <StatusCard
           title="Version"
-          value={version.version}
+          value={health.version}
         />
 
         <StatusCard
           title="Uptime"
-          value={`${Math.floor(health.uptime)} sec`}
+          value={`${Math.floor(parseInt(health.uptime) / 60)} min`}
+        />
+
+        <StatusCard
+          title="Last Updated"
+          value={new Date(health.timestamp).toLocaleString()}
+        />
+        <StatusCard
+          title="Build Date"
+          value={new Date(version.buildDate).toLocaleString()}
         />
       </div>
     </section>

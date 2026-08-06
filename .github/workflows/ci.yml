@@ -9,8 +9,13 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build-test:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -26,9 +31,9 @@ jobs:
             backend/package-lock.json
             frontend/package-lock.json
 
-      ########################
+      ##################################
       # Backend
-      ########################
+      ##################################
 
       - name: Install Backend Dependencies
         working-directory: backend
@@ -38,9 +43,9 @@ jobs:
         working-directory: backend
         run: npm test --if-present
 
-      ########################
+      ##################################
       # Frontend
-      ########################
+      ##################################
 
       - name: Install Frontend Dependencies
         working-directory: frontend
@@ -50,15 +55,46 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      ########################
-      # Docker
-      ########################
+      ##################################
+      # Login to GHCR
+      ##################################
 
-      - name: Build Backend Docker Image
-        run: docker build -t peerless-backend ./backend
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Frontend Docker Image
-        run: docker build -t peerless-frontend ./frontend
+      ##################################
+      # Backend Image
+      ##################################
 
-      - name: CI Completed
-        run: echo "✅ Peerless DevOps CI completed successfully."
+      - name: Build Backend Image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/peerless-backend:latest \
+            ./backend
+
+      - name: Push Backend Image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/peerless-backend:latest
+
+      ##################################
+      # Frontend Image
+      ##################################
+
+      - name: Build Frontend Image
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/peerless-frontend:latest \
+            ./frontend
+
+      - name: Push Frontend Image
+        run: |
+          docker push \
+            ghcr.io/${{ github.repository_owner }}/peerless-frontend:latest
+
+      - name: Finished
+        run: echo "CI completed successfully."
