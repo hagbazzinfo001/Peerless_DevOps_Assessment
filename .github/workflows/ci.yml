@@ -2,16 +2,16 @@ name: Peerless DevOps CI
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - main
 
-permissions:
-  contents: read
-  packages: write
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  test-build:
+  build-test:
+
     runs-on: ubuntu-latest
 
     steps:
@@ -22,10 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            backend/package-lock.json
-            frontend/package-lock.json
+
+      #########################
+      # Backend
+      #########################
 
       - name: Install Backend Dependencies
         working-directory: backend
@@ -35,6 +35,10 @@ jobs:
         working-directory: backend
         run: npm test
 
+      #########################
+      # Frontend
+      #########################
+
       - name: Install Frontend Dependencies
         working-directory: frontend
         run: npm ci
@@ -42,6 +46,10 @@ jobs:
       - name: Build Frontend
         working-directory: frontend
         run: npm run build
+
+      #########################
+      # Docker
+      #########################
 
       - name: Build Backend Docker Image
         run: docker build -t peerless-backend ./backend
