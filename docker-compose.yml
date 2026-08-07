@@ -1,11 +1,15 @@
 services:
   backend:
     image: ghcr.io/hagbazzinfo001/peerless-backend:latest
+    environment:
+      APP_NAME: Peerless DevOps Showcase
+      APP_VERSION: latest
+      ENVIRONMENT: production
     expose:
       - "5000"
 
   frontend:
-    image: ghcr.io/hagbazzinfo001/peerless-frontend:latest
+    image: ghcr.io/hagbazzin fo001/peerless-frontend:latest
     expose:
       - "80"
 
