@@ -13,8 +13,8 @@ export function useSystemStatus() {
     async function fetchStatus() {
       try {
         const [healthRes, versionRes] = await Promise.all([
-          api.get("/api/health"),
-          api.get("/api/info"),
+          api.get("/health"),
+          api.get("/info"),
         ]);
 
         setHealth(healthRes.data);
