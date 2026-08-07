@@ -36,9 +36,18 @@ export default function SystemStatus() {
           value={new Date(health.timestamp).toLocaleString()}
         />
         <StatusCard
-          title="Build Date"
-          value={new Date(version.buildDate).toLocaleString()}
-        />
+  title="Memory Usage"
+  value={`${health.memoryUsageMB} MB`}
+/>
+       <StatusCard
+  title="Build Date"
+  value={
+    version.buildDate
+      ? new Date(version.buildDate).toLocaleString()
+      : "N/A"
+  }
+/>
+
       </div>
     </section>
   );

@@ -13,14 +13,21 @@ permissions:
   contents: read
   packages: write
 
+env:
+  IMAGE_OWNER: ${{ github.repository_owner }}
+
 jobs:
   build-test:
-
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+
+      - name: Generate Build Metadata
+        run: |
+          echo "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
+          echo "SHORT_SHA=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -31,9 +38,9 @@ jobs:
             backend/package-lock.json
             frontend/package-lock.json
 
-      ##################################
+      ########################
       # Backend
-      ##################################
+      ########################
 
       - name: Install Backend Dependencies
         working-directory: backend
@@ -43,9 +50,9 @@ jobs:
         working-directory: backend
         run: npm test --if-present
 
-      ##################################
+      ########################
       # Frontend
-      ##################################
+      ########################
 
       - name: Install Frontend Dependencies
         working-directory: frontend
@@ -55,9 +62,9 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      ##################################
+      ########################
       # Login to GHCR
-      ##################################
+      ########################
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -66,35 +73,44 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      ##################################
+      ########################
       # Backend Image
-      ##################################
+      ########################
 
       - name: Build Backend Image
         run: |
           docker build \
-            -t ghcr.io/${{ github.repository_owner }}/peerless-backend:latest \
+            --build-arg APP_VERSION=$SHORT_SHA \
+            --build-arg BUILD_DATE="$BUILD_DATE" \
+            -t ghcr.io/$IMAGE_OWNER/peerless-backend:latest \
+            -t ghcr.io/$IMAGE_OWNER/peerless-backend:$SHORT_SHA \
             ./backend
 
-      - name: Push Backend Image
+      - name: Push Backend Images
         run: |
-          docker push \
-            ghcr.io/${{ github.repository_owner }}/peerless-backend:latest
+          docker push ghcr.io/$IMAGE_OWNER/peerless-backend:latest
+          docker push ghcr.io/$IMAGE_OWNER/peerless-backend:$SHORT_SHA
 
-      ##################################
+      ########################
       # Frontend Image
-      ##################################
+      ########################
 
       - name: Build Frontend Image
         run: |
           docker build \
-            -t ghcr.io/${{ github.repository_owner }}/peerless-frontend:latest \
+            --build-arg APP_VERSION=$SHORT_SHA \
+            --build-arg BUILD_DATE="$BUILD_DATE" \
+            -t ghcr.io/$IMAGE_OWNER/peerless-frontend:latest \
+            -t ghcr.io/$IMAGE_OWNER/peerless-frontend:$SHORT_SHA \
             ./frontend
 
-      - name: Push Frontend Image
+      - name: Push Frontend Images
         run: |
-          docker push \
-            ghcr.io/${{ github.repository_owner }}/peerless-frontend:latest
+          docker push ghcr.io/$IMAGE_OWNER/peerless-frontend:latest
+          docker push ghcr.io/$IMAGE_OWNER/peerless-frontend:$SHORT_SHA
 
-      - name: Finished
-        run: echo "CI completed successfully."
+      - name: Build Summary
+        run: |
+          echo "✅ CI completed successfully"
+          echo "Version: $SHORT_SHA"
+          echo "Build Date: $BUILD_DATE"

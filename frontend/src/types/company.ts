@@ -20,11 +20,14 @@ export interface CompanyResponse {
   
   export interface HealthResponse {
     status: string;
-    uptime: string;
-    timestamp: string;
+    service: string;
     version: string;
     environment: string;
-
+    uptime: string;
+    timestamp: string;
+    nodeVersion: string;
+    memoryUsage: number;
+    memoryUsageMB: string;
   }
   
   export interface VersionResponse {
