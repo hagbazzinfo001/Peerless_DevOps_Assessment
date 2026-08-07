@@ -8,7 +8,7 @@ export function useCompany() {
   useEffect(() => {
     async function fetchCompany() {
       try {
-        const response = await api.get("/company");
+        const response = await api.get("/api/company");
         setData(response.data);
       } catch (error) {
         console.error("Failed to fetch company data:", error);
