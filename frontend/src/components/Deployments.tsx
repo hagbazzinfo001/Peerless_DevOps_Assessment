@@ -11,7 +11,7 @@ export default function Deployment() {
     return (
       <section className="rounded-2xl bg-white p-8 shadow-lg">
         <h2 className="mb-8 text-3xl font-bold">
-          Deployment Pipeline
+          Deployments Pipeline
         </h2>
   
         <div className="grid gap-4 md:grid-cols-3">
