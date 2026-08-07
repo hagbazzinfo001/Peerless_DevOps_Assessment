@@ -9,7 +9,7 @@ services:
       - "5000"
 
   frontend:
-    image: ghcr.io/hagbazzin fo001/peerless-frontend:latest
+    image: ghcr.io/hagbazzinfo001/peerless-frontend:latest
     expose:
       - "80"
 
