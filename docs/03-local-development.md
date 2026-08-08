@@ -50,13 +50,13 @@ docker compose version
 # Clone Repository
 
 ```bash
-git clone https://github.com/<your-username>/peerless-devops-showcase.git
+git clone https://github.com/hagbazzinfo001/Peerless_DevOps_Assessment.git
 ```
 
 Navigate into the project.
 
 ```bash
-cd peerless-devops-showcase
+cd Peerless_DevOps_Assessment
 ```
 
 ---
@@ -64,7 +64,7 @@ cd peerless-devops-showcase
 # Project Structure
 
 ```
-peerless-devops-showcase/
+Peerless_DevOps_Assessment/
 
 backend/
 frontend/
